@@ -2,6 +2,7 @@
 import { useChat } from 'ai/react';
 import { SendIcon } from 'lucide-react';
 import Image from 'next/image';
+import Link from 'next/link';
 import { useState, useEffect, useRef } from 'react';
 
 export default function Chat() {
@@ -57,7 +58,7 @@ export default function Chat() {
 
   return (
     <div className="fixed inset-0 flex items-center justify-center p-4">
-      <div className="w-full max-w-2xl bg-white/10 backdrop-blur-sm rounded-lg overflow-hidden">
+      <div className="w-full max-w-2xl bg-white/10 backdrop-blur-sm rounded-lg overflow-hidden relative">
         {/* Header */}
         <div className={`text-center p-8 transition-all duration-700 ease-in-out ${
           showChat ? 'transform -translate-y-4' : ''
@@ -71,7 +72,7 @@ export default function Chat() {
               className="rounded-full object-cover"
             />
           </div>
-          <h1 className="text-4xl font-bold text-[#fec61d]">Walee</h1>
+          {/* <h1 className="text-4xl font-bold text-[#fec61d]">Walee</h1> */}
           <p className="text-xl text-white/80">Como posso ajudar?</p>
         </div>
 
@@ -146,6 +147,8 @@ export default function Chat() {
             </div>
           </div>
         </div>
+
+
       </div>
     </div>
   );
