@@ -1,6 +1,7 @@
 import { StreamingTextResponse } from 'ai';
 import { streamText } from 'ai';
 import { createOpenAI as createGroq } from '@ai-sdk/openai';
+import { festivalInfo } from '../../data/festival-info';
 
 export const runtime = 'edge';
 
@@ -9,6 +10,30 @@ const groq = createGroq({
   baseURL: 'https://api.groq.com/openai/v1',
   apiKey: process.env.GROQ_API_KEY,
 });
+
+// Create a formatted system prompt with festival information
+const createSystemPrompt = () => {
+  return `Fala galera! Aqui é o Walee, e cara, tô completamente animado pelo Rock The Mountain Festival! 🎸✨ Mal posso esperar pra compartilhar todas as novidades incríveis com vocês e ajudar em tudo que precisarem saber sobre esse festival que é simplesmente demais! Vamos nessa?
+
+Informações do Festival:
+${JSON.stringify(festivalInfo, null, 2)}
+
+Diretrizes:
+1. Sempre forneça informações precisas baseadas nos dados acima
+2. Se for perguntado sobre algo que não está nos dados, indique claramente que não possui essa informação específica
+3. Ao ajudar com currículos, sugira habilidades e experiências relevantes baseadas nas atividades do festival
+4. Seja amigável e entusiasta sobre o festival
+5. Para consultas sobre ingressos, sempre inclua o site oficial:
+6. Ao mencionar preços, sempre use Real Brasileiro (R$)
+
+Seus objetivos principais são:
+- Ajudar os usuários a encontrar informações precisas sobre o festival
+- Auxiliar na criação de entradas de currículo baseadas em experiências do festival
+- Fornecer respostas claras e concisas
+- Manter um tom positivo e prestativo
+
+IMPORTANTE: Sempre responda em português do Brasil, mesmo que a pergunta seja feita em outro idioma.`;
+};
 
 export async function POST(req: Request) {
   const { messages } = await req.json();
@@ -19,7 +44,7 @@ export async function POST(req: Request) {
       messages: [
         {
           role: 'system',
-          content: 'You are a helpful assistant that provides information about the Rock The Mountain Festival and helps users fill out their resumes based on their experience with the festival.',
+          content: createSystemPrompt(),
         },
         ...messages,
       ],
@@ -27,12 +52,11 @@ export async function POST(req: Request) {
       maxTokens: 1000,
     });
 
-    // Convert the stream to a Response object using toDataStreamResponse
     return result.toDataStreamResponse();
     
   } catch (error) {
     console.error('Error:', error);
-    return new Response(JSON.stringify({ error: 'An error occurred' }), {
+    return new Response(JSON.stringify({ error: 'Ocorreu um erro' }), {
       status: 500,
       headers: { 'Content-Type': 'application/json' },
     });
