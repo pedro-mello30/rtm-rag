@@ -58,7 +58,7 @@ export default function Chat() {
 
   return (
     <div className="fixed inset-0 flex items-center justify-center p-4">
-      <div className="w-full max-w-2xl bg-white/10 backdrop-blur-sm rounded-lg overflow-hidden relative">
+      <div className="w-full max-w-2xl bg-white/10 backdrop-blur-sm rounded-lg overflow-hidden relative h-[calc(100vh-2rem)] flex flex-col">
         {/* Header */}
         <div className={`text-center p-8 transition-all duration-700 ease-in-out ${
           showChat ? 'transform -translate-y-4' : ''
@@ -72,44 +72,46 @@ export default function Chat() {
               className="rounded-full object-cover"
             />
           </div>
-          {/* <h1 className="text-4xl font-bold text-[#fec61d]">Walee</h1> */}
           <p className="text-xl text-white/80">Como posso ajudar?</p>
         </div>
 
         {/* Chat Content */}
-        <div className="px-8">
-          <div 
-            className={`transition-all duration-700 ease-in-out ${
-              showChat && messages.length > 0
-                ? 'max-h-[400px] opacity-100 mb-8'
-                : 'max-h-0 opacity-0 overflow-hidden pointer-events-none'
-            }`}
-          >
-            <div className="h-[400px] overflow-y-auto scrollbar-thin scrollbar-thumb-white/20 scrollbar-track-transparent hover:scrollbar-thumb-white/40 pr-4">
-              {messages.map((message) => (
-                <div
-                  key={message.id}
-                  className={`p-4 rounded-lg break-words mb-4 ${
-                    message.role === 'assistant'
-                      ? 'bg-[#f438f5] text-white ml-4'
-                      : 'bg-[#fec61d] text-black mr-4'
-                  }`}
-                >
-                  {message.content}
-                </div>
-              ))}
-              {isLoading && (
-                <div className="p-4 rounded-lg bg-[#f438f5] text-white ml-4">
-                  Pensando...
-                </div>
-              )}
-              <div ref={messagesEndRef} />
+        <div className="flex-1 flex flex-col min-h-0">
+          <div className="flex-1 overflow-y-auto px-8">
+            <div 
+              className={`transition-all duration-700 ease-in-out ${
+                showChat && messages.length > 0
+                  ? 'opacity-100'
+                  : 'max-h-0 opacity-0 overflow-hidden pointer-events-none'
+              }`}
+            >
+              <div className="scrollbar-thin scrollbar-thumb-white/20 scrollbar-track-transparent hover:scrollbar-thumb-white/40 pr-4">
+                {messages.map((message) => (
+                  <div
+                    key={message.id}
+                    className={`p-4 rounded-lg break-words mb-4 ${
+                      message.role === 'assistant'
+                        ? 'bg-[#f438f5] text-white ml-4'
+                        : 'bg-[#fec61d] text-black mr-4'
+                    }`}
+                  >
+                    {message.content}
+                  </div>
+                ))}
+                {isLoading && (
+                  <div className="p-4 rounded-lg bg-[#f438f5] text-white ml-4">
+                    Pensando...
+                  </div>
+                )}
+                <div ref={messagesEndRef} />
+              </div>
             </div>
           </div>
 
-          {/* Input Form */}
-          <div className="space-y-4">
-            <form onSubmit={handleSubmitWithAnimation}>
+          {/* Bottom Section with Input and Suggestions */}
+          <div className="px-8 pb-4">
+            {/* Input Form */}
+            <form onSubmit={handleSubmitWithAnimation} className="mb-4">
               <div className="relative">
                 <input
                   value={input}
@@ -127,28 +129,24 @@ export default function Chat() {
                 </button>
               </div>
             </form>
-          </div>
-        </div>
 
-        {/* Footer */}
-        <div className="p-8">
-          <div className="space-y-2">
-            <p className="text-sm font-medium text-white/80">Sugestões:</p>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-              {suggestedQuestions.map((question, index) => (
-                <button
-                  key={index}
-                  className="w-full p-3 text-left justify-start text-sm bg-[#fec61d] text-black rounded-lg hover:opacity-90 cursor-pointer active:scale-95 transition-transform"
-                  onClick={() => handleQuestionClick(question)}
-                >
-                  {question}
-                </button>
-              ))}
+            {/* Suggestions */}
+            <div className="space-y-2">
+              <p className="text-sm font-medium text-white/80">Sugestões:</p>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                {suggestedQuestions.map((question, index) => (
+                  <button
+                    key={index}
+                    className="w-full p-3 text-left justify-start text-sm bg-[#fec61d] text-black rounded-lg hover:opacity-90 cursor-pointer active:scale-95 transition-transform"
+                    onClick={() => handleQuestionClick(question)}
+                  >
+                    {question}
+                  </button>
+                ))}
+              </div>
             </div>
           </div>
         </div>
-
-
       </div>
     </div>
   );
